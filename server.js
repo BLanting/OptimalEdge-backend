@@ -10,6 +10,7 @@ const app = express();
 // ✅ Allow CORS from both local (development) and production (GoDaddy)
 const allowedOrigins = [
   "http://localhost:8080", // Local testing
+    "http://localhost:8081", // Local testing
   "https://optimaledge.ai", // Production (replace with actual domain)
 ];
 
@@ -25,6 +26,16 @@ app.use(
     credentials: true, // Allow cookies/authentication if needed
   })
 );
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*"); // Allow all origins for debugging
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+  next();
+});
 
 app.use(express.json());
 
