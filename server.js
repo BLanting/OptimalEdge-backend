@@ -6,7 +6,26 @@ import nodemailer from "nodemailer";
 
 dotenv.config();
 const app = express();
-app.use(cors());
+
+// ✅ Allow CORS from both local (development) and production (GoDaddy)
+const allowedOrigins = [
+  "http://localhost:8080", // Local testing
+  "https://optimaledge.ai", // Production (replace with actual domain)
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS policy does not allow access from origin: ${origin}`));
+      }
+    },
+    credentials: true, // Allow cookies/authentication if needed
+  })
+);
+
 app.use(express.json());
 
 dotenv.config();
